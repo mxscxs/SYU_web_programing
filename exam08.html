@@ -8,8 +8,10 @@
 <style>
     * {color: blue;} /*전체 선택자*/
     p {background-color: yellow;} /*태그 선택자*/
-    .c1 {border: 1px solid red;} /*클래스 선택자*/
-    #n1 {background-color: aqua;} /*아이디 선택자*/
+    .c1 {border: 1px solid red;} /*클래스 선택자 -> 여러개!! (아이디는 무조건 하나, 클래스는 여러개)*/
+    #n1 {background-color: aqua;} /*아이디 선택자 -> 동일 아이디를 통해 여러개 선택 시 모두 적용은 가능함, 하지만 이렇게 사용X (js에 영향을 줌) 아이디는 오직 하나의 element만 선택할 때 사용*/
+    ul li {color: brown;} /*하위 선택자 (띄어쓰기)*/
+    ol>li {color: chartreuse;} /*자식 선택자 (부등호 >)*/
 </style>
 <body>
     <h1 style="color:red;">CSS 스타일</h1> <!--인라인으로 지정한 부분은 red로 남았음 (우선순위)-->
@@ -22,7 +24,7 @@
         <li>JS</li>
     </ul>
     <ol>
-        <li id="n1">HTML</li>
+        <li>HTML</li>
         <li>CSS</li>
         <li>JS</li>
     </ol>

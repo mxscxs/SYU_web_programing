@@ -14,9 +14,16 @@
         <input type="checkbox" name="c1" value="v1">C<br>
         <input type="checkbox" name="c2" value="v2">P<br>
         <input type="checkbox" name="c3" value="v3">JS<br>
-        <input type="radio" name="r1" value="rv1">Front<br>
-        <input type="radio" name="r2" value="rv2">Back<br>
-        <input type="radio" name="r3" value="rv3">Full<br>
+        <!--radio는 그룹으로 동작하도록 만들어야 함 (radio gropping-같은 name으로 사용하면 그룹화 됨) *현재는 독립적으로 작동하고 있음-->
+       <!-- <input type="radio" name="r1" value="rv1">Front<br> 
+        <input type="radio" name="r2" value="rv2">Back<br> 
+        <input type="radio" name="r3" value="rv3">Full<br> -->
+
+        <!--그룹화 시킴-->
+        <input type="radio" name="r1" value="rv1">Front<br> 
+        <input type="radio" name="r1" value="rv2">Back<br> 
+        <input type="radio" name="r1" value="rv3">Full<br>
+
         <hr>
         <input type="hidden" name="h1" value="hv1"><br>
         <hr>

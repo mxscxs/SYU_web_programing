@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    //단순 팝엄
+    alert('hello, Javascript!!'); //tap(popup) 제목(title)을 작성하지 않았으므로 tap(popup)의 url이 뜸 
+    //alert은 blocking함수이므로 해당 창이 닫히기 전까지 모든 것이 스탑되어있음
+
+    //확인 팝업
+    let sel = confirm('Really?'); //확인을 위한 용도로 사용되는 함수
+    //tap(popup)안에 확인 or 취소 버튼이 니옴, 아무거나 눌러도 해당 창은 닫히지만 그 반환값이 달라짐 -> 분기점
+
+    //입력 팝업
+    let input = prompt('이름을 입력하세요.');
+</script>
+<body>
+    <h1>Javascript</h1>
+    <script>
+        document.write('<h2>Js의 입력과 출력</h2>'); //html안에 동적으로 코드를 집어넣음
+        //저 문장이 모두 출력(태그 글자는 출력X)되지만 html의 태그가 입력되어 있으므로 자동으로 저 태그를 읽어냄 -> h 태그의 element로 출력시킴
+    </script>
+    당신의 이름은
+    <script>
+        document.write(input);
+    </script>
+    입니다.
+</body>
+</html>

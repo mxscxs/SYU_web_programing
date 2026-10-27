@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    let score = prompt('점수를 입력하세요.')
+    switch(parseInt(score/10)) { 
+        /*정수 형 변환을 통해 몫을 이용 -> case가 값으로 딱 떨어질 수 있게 만듬 
+        (버림의 연산)
+        range를 단일 값으로 mapping 해주는 방법을 생각해보기 */
+        //switch는 단일 값(case)를 찾아가게 만들고 그 값에 따른 명령을 수행하게 함
+        case(10): //case값이 10일 때 9일 때에 대한 명령 한 번에 수행시키기
+        case (9):
+            alert('A 입니다.')
+            break;
+        case (8):
+            alert('B 입니다.')
+            break;
+        case (7):
+            alert('C 입니다.')
+            break;
+        case (6):
+            alert('D 입니다.')
+            break;
+        default:
+            alert('F 입니다.')
+    }
+    /* switch(true) {
+        //switch의 값을 true로 두고 이 값이 true가 되게 만드는 식을 case에 넣어줌
+        case score >= 90: //ture값을 찾아가게 case를 만듬
+            alert('A 입니다.')
+            break;
+    } */
+</script>
+<body>
+    <h1>Js switch case문</h1>
+</body>
+</html>

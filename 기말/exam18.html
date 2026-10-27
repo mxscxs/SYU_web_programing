@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<script>
+    //반복문: 실행할 문장/명령을 하나의 문장으로 패턴화 시켜야 함 (변수 이용)
+    let num = 1;
+    while(num <= 10) { 
+        //조건이 항상 참이면 안 되기 때문에 조건식에 대한 결과가 참 -> 거짓이 되도록 조건식 세우기
+        //변수를 이용하고 있고 매 실행마다 이 변수의 깂이 변화하므로 변수를 통한 조건식 세우기
+        documentw.write(num + '<br>')
+        num++; //변수값을 계속해서 바꿔주여야 함
+    }
+</script>
 <body>
-    
+    <h1>JS 반복문 연습</h1>
 </body>
 </html>

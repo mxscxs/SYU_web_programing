@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>과제-구구단 출력</title>
+</head>
+
+<body>
+    <h1>구구단 (2단~9단)</h1>
+<script>
+    for (let multiplicand=2; multiplicand<=9; multiplicand++) {
+        document.write(multiplicand + "단<br>");
+        
+        for (let multiplier=1; multiplier<=9; multiplier++) {
+            document.write(multiplicand + "*" + multiplier + "=" + (multiplicand*multiplier) + "<br>");
+        }
+        document.write("<hr>");
+    }
+</script>
+</body>
+</html>

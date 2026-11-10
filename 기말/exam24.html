@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style> /*css 구현*/
+    h1 { text-align: center; }
+    .disp { width: 205px; height: 40px; margin-top: 3px; }
+    .disp { font-family: "Oxanium", sans-serif; font-size: 22pt; text-align: right; }
+    /*button만 선택하는 방법이 필요 -> 서브 선택자인 input[type=button]사용 이 경우 type이 buttond인 것들만 선택됨)*/
+    input[type=button] { width: 50px; height: 50px; text-align: center; vertical-align: middle; margin-top: 5px }
+    #calc { width: 220px; margin-left: auto; margin-right: auto; }
+</style>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){ //기본 셋팅
+        $('.num').click(function(){ //숫자 처리 이벤트
+            let cur = $('#disp2').val(); //이전 값 기억하기 (이 뒤에 숫자인 문자가 연결되도록)
+            let n = $(this).val(); //이어붙힐 새로운 값 얻어오기
+            $('#disp2').val(cur+n); //입력한 값이 유지됨
+        });
+        $('.op').click(function(){ //연산자 처리 이벤트
+            let cur = $('#disp2').val();
+            let opt = $(this).val();
+            if (opt != '=') { //=인 경우에는 연산 처리가 필요함
+                $('#disp2').val(cur+opt); //=이 아닌경우 이전 값이 유지됨
+            }
+            else {
+                $('#disp1').val(cur);
+                //$('#disp2').val(eval(cur)); -> 수업시간에 배운 방식을 이용하여 연산 처리 진행하는 코드 작성 (각각의 연산자에 맞는 연산 수행 후 결과 출력까지)
+                //연산자를 구분하도록 해놓았기 때문에 눌린 연산자를 기록해두면 두개의 문자열을 쪼개줌 (식별자를 기준으로, 식별자는 연산자)
+                //switch, if문 등 사용 (이항연산 까지만 -> 두개의 operand와 연산자)
+            }
+            //AC 눌렀을 시 두 text 창의 내용이 모두 reset되도록 구현
+            //AI를 활용하여 실제 자바스크립트 기반의 계산기를 구현하기 -> 프롬포트와 시행착오 과정 (중간과정 들) 정리해서 같이 과제에 올리기
+        });
+    });
+</script>
+<body>
+    <h1>계산기</h1>
+    <div id="calc"> <!--UI부분 구현 (계산기의 버튼 구현)-->
+        <div>
+            <input type="text" class="disp" id="disp1" readonly> <!--history 창 (=이 눌리는 순간 밑의 텍스트들이 이 history창으로 옮겨짐)-->
+            <input type="text" class="disp" id="disp2" readonly>
+        </div>
+        <input type="button" class="num" value="7"> <!--button의 value는 lable을 의미-->
+        <input type="button" class="num" value="8"> 
+        <input type="button" class="num" value="9"> 
+        <input type="button" class="op" value="+"><br>
+        <input type="button" class="num" value="4">
+        <input type="button" class="num" value="5"> 
+        <input type="button" class="num" value="6"> 
+        <input type="button" class="op" value="-"><br>
+        <input type="button" class="num" value="1">
+        <input type="button" class="num" value="2"> 
+        <input type="button" class="num" value="3"> 
+        <input type="button" class="op" value="*"><br>
+        <input type="button" class="func" value="AC"> 
+        <input type="button" class="num" value="0"> 
+        <input type="button" class="op" value="="> 
+        <input type="button" class="op" value="/">
+    </div>
+</body>
+</html>

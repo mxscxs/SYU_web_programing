@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $('a').click(function(event){
+            event.preventDefault(); 
+            alert('링크 이동 불가');
+        });
+        $('p').hover(function(){
+            $(this).css('color', 'red'); //전체가 모두 영역인 block level element이므로 그 칸에 포인터가 있으면 색 변화함
+        }, function(){
+            $(this).css('color', 'black');
+        });
+    });
+</script>
+
+<body>
+    <h1>jquery 이벤트처리</h1>
+    <P><a href="https://www.syu.ac.kr">심육대학교</a></P>
+    <p>인공지능융합학부</p>
+    <p>인공지능융합학부</p>
+    <button>클릭</button>
+</body>
+</html>

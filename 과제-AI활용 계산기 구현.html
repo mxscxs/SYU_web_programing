@@ -1,11 +1,583 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>계산기</title>
+
+    <!-- jQuery 3.7.1 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e9edf2;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            width: 340px;
+            padding: 15px;
+            background-color: #20252e;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 계산 결과 표시 영역 */
+        .screen {
+            height: 115px;
+            padding: 15px 10px;
+            margin-bottom: 12px;
+            background-color: #151a22;
+            border-radius: 8px;
+            text-align: right;
+            color: white;
+        }
+
+        /* 이전 연산 결과 */
+        #smallResult {
+            height: 25px;
+            font-size: 12pt;
+            color: #aab4c3;
+            overflow: hidden;
+        }
+
+        /* 현재 입력값 */
+        #display {
+            margin-top: 8px;
+            font-size: 36pt;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 버튼 배치 */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 7px;
+        }
+
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 7px;
+            color: white;
+            font-size: 18pt;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        button:active {
+            filter: brightness(1.3);
+        }
+
+        /* 숫자 버튼 */
+        .number {
+            background-color: #666d78;
+        }
+
+        .number:hover {
+            background-color: #7d8591;
+        }
+
+        /* 사칙연산 버튼 */
+        .operator {
+            background-color: #2878e5;
+        }
+
+        .operator:hover {
+            background-color: #4591f7;
+        }
+
+        /* AC 버튼 */
+        .ac {
+            background-color: #e04444;
+        }
+
+        .ac:hover {
+            background-color: #fa5d5d;
+        }
+
+        /* 기타 기능 버튼 */
+        .function {
+            background-color: #3a4350;
+        }
+
+        .function:hover {
+            background-color: #505c6c;
+        }
+    </style>
 </head>
+
 <body>
-    
+
+<div class="calculator">
+
+    <!-- 결과 출력 -->
+    <div class="screen">
+        <div id="smallResult"></div>
+        <div id="display">0</div>
+    </div>
+
+    <!-- 계산기 버튼 -->
+    <div class="buttons">
+
+        <button class="function" data-action="percent">%</button>
+        <button class="function" data-action="ce">CE</button>
+        <button class="ac" data-action="ac">AC</button>
+        <button class="function" data-action="back">⌫</button>
+
+        <button class="function" data-action="reciprocal">1/x</button>
+        <button class="function" data-action="square">x²</button>
+        <button class="function" data-action="sqrt">√x</button>
+        <button class="operator" data-action="operator" data-value="/">÷</button>
+
+        <button class="number" data-action="number" data-value="7">7</button>
+        <button class="number" data-action="number" data-value="8">8</button>
+        <button class="number" data-action="number" data-value="9">9</button>
+        <button class="operator" data-action="operator" data-value="*">×</button>
+
+        <button class="number" data-action="number" data-value="4">4</button>
+        <button class="number" data-action="number" data-value="5">5</button>
+        <button class="number" data-action="number" data-value="6">6</button>
+        <button class="operator" data-action="operator" data-value="-">−</button>
+
+        <button class="number" data-action="number" data-value="1">1</button>
+        <button class="number" data-action="number" data-value="2">2</button>
+        <button class="number" data-action="number" data-value="3">3</button>
+        <button class="operator" data-action="operator" data-value="+">+</button>
+
+        <button class="function" data-action="sign">±</button>
+        <button class="number" data-action="number" data-value="0">0</button>
+        <button class="number" data-action="decimal">.</button>
+        <button class="operator" data-action="equal">=</button>
+
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+
+    let current = "0";
+    let previous = null;
+    let operator = null;
+
+    let resetNext = false;
+
+    // 반복해서 =을 누르는 기능
+    let lastOperator = null;
+    let lastOperand = null;
+
+    // 상단에 표시할 마지막 계산 결과
+    let smallResult = "";
+
+    // 숫자를 보기 좋게 출력
+    function formatNumber(value) {
+        let str = String(value);
+
+        if (str === "오류" || str.includes("e")) {
+            return str;
+        }
+
+        let parts = str.split(".");
+
+        parts[0] = parts[0].replace(
+            /\B(?=(\d{3})+(?!\d))/g, ","
+        );
+
+        return parts.join(".");
+    }
+
+    // 화면 업데이트
+    function updateDisplay() {
+        $("#display").text(formatNumber(current));
+        $("#smallResult").text(formatNumber(smallResult));
+    }
+
+    // 숫자 입력
+    function inputNumber(num) {
+
+        if (resetNext || current === "오류") {
+            current = num;
+            resetNext = false;
+        } else if (current === "0") {
+            current = num;
+        } else {
+            current += num;
+        }
+
+        lastOperator = null;
+        lastOperand = null;
+
+        updateDisplay();
+    }
+
+    // 소수점 입력
+    function inputDecimal() {
+
+        if (resetNext || current === "오류") {
+            current = "0.";
+            resetNext = false;
+        } else if (!current.includes(".")) {
+            current += ".";
+        }
+
+        lastOperator = null;
+        lastOperand = null;
+
+        updateDisplay();
+    }
+
+    // 실제 계산을 수행하는 함수
+    function calculate(a, b, op) {
+
+        let result;
+
+        switch (op) {
+            case "+":
+                result = a + b;
+                break;
+
+            case "-":
+                result = a - b;
+                break;
+
+            case "*":
+                result = a * b;
+                break;
+
+            case "/":
+                if (b === 0) return null;
+                result = a / b;
+                break;
+
+            default:
+                return null;
+        }
+
+        if (!Number.isFinite(result)) return null;
+
+        return Number(result.toPrecision(12));
+    }
+
+    // 오류 처리
+    function showError() {
+        current = "오류";
+        previous = null;
+        operator = null;
+        resetNext = true;
+        lastOperator = null;
+        lastOperand = null;
+        smallResult = "";
+
+        updateDisplay();
+    }
+
+    // 연산자 선택
+    function selectOperator(op) {
+
+        if (current === "오류") return;
+
+        if (operator !== null && !resetNext) {
+
+            let result = calculate(
+                previous,
+                Number(current),
+                operator
+            );
+
+            if (result === null) {
+                showError();
+                return;
+            }
+
+            current = String(result);
+            smallResult = current;
+        }
+
+        previous = Number(current);
+        operator = op;
+        resetNext = true;
+
+        lastOperator = null;
+        lastOperand = null;
+
+        updateDisplay();
+    }
+
+    // = 버튼
+    function equal() {
+
+        if (current === "오류") return;
+
+        let result;
+
+        if (operator !== null) {
+
+            let second = resetNext
+                ? previous
+                : Number(current);
+
+            result = calculate(previous, second, operator);
+
+            if (result === null) {
+                showError();
+                return;
+            }
+
+            lastOperator = operator;
+            lastOperand = second;
+
+            operator = null;
+            previous = null;
+
+        } else if (lastOperator !== null) {
+
+            result = calculate(
+                Number(current),
+                lastOperand,
+                lastOperator
+            );
+
+            if (result === null) {
+                showError();
+                return;
+            }
+
+        } else {
+            return;
+        }
+
+        current = String(result);
+
+        // 결과만 작은 글씨로 표시
+        smallResult = current;
+
+        resetNext = true;
+
+        updateDisplay();
+    }
+
+    // 전체 초기화
+    function clearAll() {
+        current = "0";
+        previous = null;
+        operator = null;
+        resetNext = false;
+
+        lastOperator = null;
+        lastOperand = null;
+        smallResult = "";
+
+        updateDisplay();
+    }
+
+    // 현재 입력값만 삭제
+    function clearEntry() {
+        current = "0";
+        resetNext = false;
+        updateDisplay();
+    }
+
+    // 한 글자 삭제
+    function backspace() {
+
+        if (resetNext || current === "오류") return;
+
+        current = current.slice(0, -1);
+
+        if (current === "" || current === "-") {
+            current = "0";
+        }
+
+        updateDisplay();
+    }
+
+    // 부호 변경
+    function changeSign() {
+
+        if (current === "오류") return;
+
+        if (Number(current) !== 0) {
+            current = String(-Number(current));
+        }
+
+        updateDisplay();
+    }
+
+    // 백분율 계산
+    function percent() {
+
+        if (current === "오류") return;
+
+        let value = Number(current);
+
+        if (operator === "+" || operator === "-") {
+            value = previous * value / 100;
+        } else {
+            value = value / 100;
+        }
+
+        current = String(Number(value.toPrecision(12)));
+        resetNext = false;
+
+        updateDisplay();
+    }
+
+    // 제곱, 제곱근, 역수
+    function unaryOperation(action) {
+
+        if (current === "오류") return;
+
+        let value = Number(current);
+        let result;
+
+        switch (action) {
+
+            case "square":
+                result = value * value;
+                break;
+
+            case "sqrt":
+                if (value < 0) {
+                    showError();
+                    return;
+                }
+                result = Math.sqrt(value);
+                break;
+
+            case "reciprocal":
+                if (value === 0) {
+                    showError();
+                    return;
+                }
+                result = 1 / value;
+                break;
+        }
+
+        if (!Number.isFinite(result)) {
+            showError();
+            return;
+        }
+
+        current = String(Number(result.toPrecision(12)));
+
+        // 단항 연산 결과도 위쪽에 표시
+        smallResult = current;
+
+        resetNext = operator === null;
+
+        updateDisplay();
+    }
+
+    // 버튼 클릭 이벤트
+    $(".buttons button").on("click", function() {
+
+        let action = $(this).data("action");
+        let value = $(this).data("value");
+
+        switch (action) {
+
+            case "number":
+                inputNumber(String(value));
+                break;
+
+            case "decimal":
+                inputDecimal();
+                break;
+
+            case "operator":
+                selectOperator(value);
+                break;
+
+            case "equal":
+                equal();
+                break;
+
+            case "ac":
+                clearAll();
+                break;
+
+            case "ce":
+                clearEntry();
+                break;
+
+            case "back":
+                backspace();
+                break;
+
+            case "sign":
+                changeSign();
+                break;
+
+            case "percent":
+                percent();
+                break;
+
+            case "square":
+            case "sqrt":
+            case "reciprocal":
+                unaryOperation(action);
+                break;
+        }
+    });
+
+    // 키보드 입력도 지원
+    $(document).on("keydown", function(e) {
+
+        let key = e.key;
+        let handled = true;
+
+        if (/^[0-9]$/.test(key)) {
+            inputNumber(key);
+
+        } else if (key === ".") {
+            inputDecimal();
+
+        } else if (["+", "-", "*", "/"].includes(key)) {
+            selectOperator(key);
+
+        } else if (key === "Enter" || key === "=") {
+            equal();
+
+        } else if (key === "Escape") {
+            clearAll();
+
+        } else if (key === "Delete") {
+            clearEntry();
+
+        } else if (key === "Backspace") {
+            backspace();
+
+        } else if (key === "%") {
+            percent();
+
+        } else if (key === "F9") {
+            changeSign();
+
+        } else {
+            handled = false;
+        }
+
+        if (handled) {
+            e.preventDefault();
+        }
+    });
+
+    updateDisplay();
+
+});
+</script>
+
 </body>
 </html>

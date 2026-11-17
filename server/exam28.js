@@ -12,5 +12,5 @@ const server = http.createServer((req, res)=>{
 });
 
 server.listen(PORT, ()=>{
-    console.log(`$[PORT]번 포트로 서버 실행`); //따움표 아님, 백틱?? 
+    console.log(`${PORT}번 포트로 서버 실행`); //따움표 아님, 백틱?? 
 });

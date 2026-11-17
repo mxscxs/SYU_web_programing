@@ -2,8 +2,9 @@
 const http = require("http");
 
 const server = http.createServer((req, res)=>{
-    console.log("요청 발생");
-    console.log(req);
+    //console.log("요청 발생");
+    //console.log(req);
+    console.log(req.method);
     //응답 해더
     res.setHeader("Content-Type", "text/plain");
     //응답 본문
